@@ -5,6 +5,10 @@ type Merge<F, S> = {
   : key extends keyof F ? F[key] : never
 }
 
+// keyof F | keyof S 
+// can also be 
+// keyof (F & S)
+
 type Foo = {
   a: number
   b: string
