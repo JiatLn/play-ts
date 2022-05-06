@@ -16,12 +16,17 @@
 
 /* _____________ Your Code Here _____________ */
 
+// type Zip<T extends any[], V extends any[], R extends any[] = []> =
+//   T extends [infer FirstT, ...infer RestT]
+//   ? V extends [infer FirstV, ...infer RestV]
+//   ? Zip<RestT, RestV, [...R, [FirstT, FirstV]]>
+//   : R
+//   : R
+
+
 type Zip<T extends any[], V extends any[], R extends any[] = []> =
-  T extends [infer FirstT, ...infer RestT]
-  ? V extends [infer FirstV, ...infer RestV]
-  ? Zip<RestT, RestV, [...R, [FirstT, FirstV]]>
-  : R
-  : R
+  R['length'] extends T['length'] | V['length'] ? R :
+  Zip<T, V, [...R, [T[R['length']], V[R['length']]]]>
 
 
 /* _____________ Test Cases _____________ */
