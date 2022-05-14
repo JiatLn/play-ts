@@ -20,10 +20,15 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Chunk<T extends any[], N extends number, R extends any[] = [], A extends any[] = []> =
-  T extends [infer F, ...infer Rest]
-  ? R['length'] extends N ? Chunk<Rest, N, [F], [...A, R]> : Chunk<Rest, N, [...R, F], A>
-  : R['length'] extends 0 ? A : [...A, R]
+// type Chunk<T extends any[], N extends number, R extends any[] = [], A extends any[] = []> =
+//   T extends [infer F, ...infer Rest]
+//   ? R['length'] extends N ? Chunk<Rest, N, [F], [...A, R]> : Chunk<Rest, N, [...R, F], A>
+//   : R['length'] extends 0 ? A : [...A, R]
+
+type Chunk<T extends any[], N extends number, R extends any[] = []>
+  = R['length'] extends N ? [R, ...Chunk<T, N>] :
+  T extends [infer F, ...infer Rest] ? Chunk<Rest, N, [...R, F]>
+  : R extends [] ? R : [R]
 
 type test = Chunk<[], 1>
 
