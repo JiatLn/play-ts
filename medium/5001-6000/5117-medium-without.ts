@@ -18,13 +18,20 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Without<T extends any[], U extends any> =
-  U extends any[] ? WithoutArray<T, U> : WithoutArray<T, [U]>
+// type Without<T extends any[], U extends any> =
+//   U extends any[] ? WithoutArray<T, U> : WithoutArray<T, [U]>
 
-type WithoutArray<T extends any[], U extends any[], Ans extends any[] = []> =
+// type WithoutArray<T extends any[], U extends any[], Ans extends any[] = []> =
+//   T extends [infer F, ...infer Rest]
+//   ? isInclude<U, F> extends false ? WithoutArray<Rest, U, [...Ans, F]> : WithoutArray<Rest, U, Ans>
+//   : Ans
+
+type Without<T extends any[], U extends any, Ans extends any[] = []> =
+  U extends any[] ?
   T extends [infer F, ...infer Rest]
-  ? isInclude<U, F> extends false ? WithoutArray<Rest, U, [...Ans, F]> : WithoutArray<Rest, U, Ans>
+  ? isInclude<U, F> extends false ? Without<Rest, U, [...Ans, F]> : Without<Rest, U, Ans>
   : Ans
+  : Without<T, [U]>
 
 type isInclude<T extends any, N> = T extends [infer F, ...infer Rest] ? F extends N ? true : isInclude<Rest, N> : false
 
