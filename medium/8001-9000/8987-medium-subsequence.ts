@@ -23,7 +23,7 @@
 
 type Subsequence<T extends any[]> =
   T extends [infer F, ...infer Rest]
-  ? [F, ...Subsequence<Rest>] | [...Subsequence<Rest>]
+  ? [F, ...Subsequence<Rest>] | Subsequence<Rest>
   : []
 
 type test = Subsequence<[1, 2, 3, 4]>
