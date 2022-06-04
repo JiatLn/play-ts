@@ -1,16 +1,8 @@
-type Permutation<T, U = T> =
-  [T] extends [never] ? [] :
-  T extends U ? [T, ...Permutation<Exclude<U, T>>] : []
+import type { Equal, Expect } from '@type-challenges/utils'
 
-type test = Permutation<'A' | 'B' | 'C'>
-
-
-type t = Exclude<'A', 'A'>
-
-type isNever1<T> = T extends never ? 1 : 2 // ❎
-type isNever2<T> = [T] extends [never] ? 1 : 2 // ✅ 
-
-type test1 = isNever1<never>
-type test2 = isNever2<never>
-
-// 判断是不是 never 要加 []
+type cases = [
+  Expect<Equal<Permutation<'A'>, ['A']>>,
+  Expect<Equal<Permutation<'A' | 'B' | 'C'>, ['A', 'B', 'C'] | ['A', 'C', 'B'] | ['B', 'A', 'C'] | ['B', 'C', 'A'] | ['C', 'A', 'B'] | ['C', 'B', 'A']>>,
+  Expect<Equal<Permutation<'B' | 'A' | 'C'>, ['A', 'B', 'C'] | ['A', 'C', 'B'] | ['B', 'A', 'C'] | ['B', 'C', 'A'] | ['C', 'A', 'B'] | ['C', 'B', 'A']>>,
+  Expect<Equal<Permutation<never>, []>>,
+]
