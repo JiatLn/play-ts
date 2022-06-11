@@ -27,13 +27,16 @@
 
 type GetReadonlyKeys<T extends Record<string, any>> = keyof {
   [P in keyof T as P extends keyof T
-  ? Equal<Pick<T, P>, Readonly<Pick<T, P>>> extends true
+  ? MyEqual<Pick<T, P>, Readonly<Pick<T, P>>> extends true
   ? P
   : never
   : never
   ]
   : T[P]
 }
+
+type MyEqual<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends (<T>() => T extends Y ? 1 : 2) ? true : false
 
 type test = GetReadonlyKeys<Todo2>
 
