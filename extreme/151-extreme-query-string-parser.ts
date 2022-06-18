@@ -22,30 +22,38 @@
 
 type ParseQueryString<
   T extends string,
-  U extends string[] = SplitQueryString<T>,
+  U extends Array<any> = SplitQueryString<T>,
   R extends {} = {}
   > =
   U['length'] extends 0
   ? R
   : U extends [infer F, ...infer Rest]
-  ? ParseQueryString<T, Rest & string[], ParseStringKV<F & string>>
-  : R & ParseStringKV<U & string
-  >
+  ? ParseQueryString<T, Rest, MergeObject<ParseStringKV<F>, R>>
+  : R
 
 // 'A&B' -> ['A', 'B']
 type SplitQueryString<T extends string, U extends string[] = []> =
-  T extends `${infer A}&${infer B}` ? SplitQueryString<B, [...U, A]> : T extends '' ? U : [...U, T]
+  T extends `${infer A}&${infer B}` ? SplitQueryString<B, SetAdd<U, A>> : T extends '' ? U : SetAdd<U, T>
+
+// add U if U not in T
+type SetAdd<T extends any[], U> = U extends T[number] ? T : [...T, U]
 
 // 'K=V' -> { K : V }
-type ParseStringKV<T extends string> =
+type ParseStringKV<T extends any> =
   T extends '' ? never :
   T extends `${infer key}=${infer value}`
   ? Record<key, value>
-  : Record<T, true>
+  : Record<T & string, true>
 
-type test = SplitQueryString<'k1=v1&k1=v2'>
-type test1 = ParseQueryString<'k1=v1&k1=v2'>
-type test2 = ParseStringKV<'k1=v1'>
+type MergeObject<T, U, V = T & Omit<U, keyof T>> = {
+  [P in keyof V as P]: P extends keyof U ? P extends keyof T ? [U[P], V[P]] : V[P] : V[P]
+}
+
+type testMergeObject = MergeObject<{ a: 1 }, { b: 2 }>
+type testSetAdd = SetAdd<[1, 2, 3], 4>
+type testSplitQueryString = SplitQueryString<'k1=v1&k1=v1'>
+type testParseStringKV = ParseStringKV<'k1=v1'>
+type testParseQueryString = ParseQueryString<'k1=v1&k1=v1'>
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
