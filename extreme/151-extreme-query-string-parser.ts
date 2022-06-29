@@ -45,8 +45,10 @@ type ParseStringKV<T extends any> =
   ? Record<key, value>
   : Record<T & string, true>
 
+// { a: 1 } & { b: 2 } -> { a: 1, b: 2 }
+// { a: 1 } & { a: 2 } -> { a: [1, 2] }
 type MergeObject<T, U, V = T & Omit<U, keyof T>> = {
-  [P in keyof V as P]: P extends keyof U ? P extends keyof T ? [U[P], V[P]] : V[P] : V[P]
+  [P in keyof V]: P extends keyof U ? P extends keyof T ? [U[P], V[P]] : V[P] : V[P]
 }
 
 type testMergeObject = MergeObject<{ a: 1 }, { b: 2 }>
