@@ -20,13 +20,46 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Slice<Arr extends any[], Start extends number = 0, End extends number = Arr['length'], Curr extends any[] = []> =
-  any
+type _Slice<Arr extends any[], Start extends number = 0, End = Arr['length'], Curr extends any[] = [], R extends any[] = []> =
+  Curr['length'] extends Arr['length'] ? R
+  : Compare<Start, Arr['length']> extends 0 | 1
+  ? []
+  : (Compare<Curr['length'], Start> extends 0 | 1
+    ? (Curr['length'] extends End
+      ? R
+      : _Slice<Arr, Start, End, [...Curr, any], [...R, Arr[Curr['length']]]>)
+    : _Slice<Arr, Start, End, [...Curr, any], R>
+  )
 
-type Compare<T extends any[], U extends any[]> =
-  T['length'] extends U['length']
-  ? 0
-  : [...T] extends [...U, ...infer Rest] ? 1 : 2
+type Slice<Arr extends any[], Start extends number = 0, End extends number = Arr['length'], Curr extends any[] = [], R extends any[] = []> =
+  End extends 0 ? [] :
+  _Slice<Arr, ParseIndex<Start, Arr['length']>, ParseIndex<End, Arr['length']>, Curr, R>
+
+type Compare<A extends number, B extends number> =
+  A extends B ? 0 :
+  NTuple<A> extends [...infer F, ...NTuple<B>] ? 1 : 2
+
+type NTuple<N extends number, T extends any[] = []> =
+  T['length'] extends N ? T : NTuple<N, [...T, any]>
+
+
+type test = Slice<Arr, 2, 10>
+
+type IsNagetive<T extends number> = `${T}` extends `-${infer N}` ? true : false
+type Nagetive2PostiveStr<T extends number> = `${T}` extends `-${infer N}` ? N : never
+type Str2Num<T extends string, Curr extends any[] = []> = `${Curr['length']}` extends T ? Curr['length'] : Str2Num<T, [...Curr, any]>
+type Nagetive2Postive<T extends number> = Str2Num<Nagetive2PostiveStr<T>>
+
+type test2 = Nagetive2Postive<-3>
+
+type GetIndex<T extends number, U extends number> = [...NTuple<U>] extends [...infer F, ...NTuple<T>] ? F['length'] : 0
+
+type ParseIndex<T extends number, U extends number> =
+  IsNagetive<T> extends true
+  ? GetIndex<Nagetive2Postive<T>, U>
+  : T
+
+type test3 = ParseIndex<-1, 5>
 
 
 
