@@ -63,20 +63,26 @@ type CheckGameStatus<B extends
     Row<Grid<Chess>, Grid<Chess>, Grid<Chess>>,
     Row<Grid<Chess>, Grid<Chess>, Grid<Chess>>
   >> = B extends [infer R1, infer R2, infer R3]
-  ? WonShape<'❌'> extends R1 | R2 | R3 ? 'The wonner is ❌!'
-  : [B[0][0], B[1][1], B[2][2]] extends WonShape<'❌'> ? 'The wonner is ❌!'
-  : [B[0][2], B[1][1], B[2][0]] extends WonShape<'❌'> ? 'The wonner is ❌!'
-  : [B[0][0], B[1][0], B[2][0]] extends WonShape<'❌'> ? 'The wonner is ❌!'
-  : [B[0][1], B[1][1], B[2][1]] extends WonShape<'❌'> ? 'The wonner is ❌!'
-  : [B[0][2], B[1][2], B[2][2]] extends WonShape<'❌'> ? 'The wonner is ❌!'
-  : WonShape<'⭕'> extends R1 | R2 | R3 ? "The wonner is ⭕!"
-  : [B[0][0], B[1][1], B[2][2]] extends WonShape<'⭕'> ? "The wonner is ⭕!"
-  : [B[0][2], B[1][1], B[2][0]] extends WonShape<'⭕'> ? "The wonner is ⭕!"
-  : [B[0][0], B[1][0], B[2][0]] extends WonShape<'⭕'> ? "The wonner is ⭕!"
-  : [B[0][1], B[1][1], B[2][1]] extends WonShape<'⭕'> ? "The wonner is ⭕!"
-  : [B[0][2], B[1][2], B[2][2]] extends WonShape<'⭕'> ? "The wonner is ⭕!"
-  : 'The game continue.'
+  ? (
+    WonShape<'❌'> extends
+    | R1 | R2 | R3
+    | [B[0][0], B[1][1], B[2][2]]
+    | [B[0][2], B[1][1], B[2][0]]
+    | [B[0][0], B[1][0], B[2][0]]
+    | [B[0][1], B[1][1], B[2][1]]
+    | [B[0][2], B[1][2], B[2][2]] ? FormatWonner<'❌'>
+    : WonShape<'⭕'> extends
+    | R1 | R2 | R3
+    | [B[0][0], B[1][1], B[2][2]]
+    | [B[0][2], B[1][1], B[2][0]]
+    | [B[0][0], B[1][0], B[2][0]]
+    | [B[0][1], B[1][1], B[2][1]]
+    | [B[0][2], B[1][2], B[2][2]] ? FormatWonner<'⭕'>
+    : 'The game continue.'
+  )
   : never
+
+type FormatWonner<T extends Chess> = `The wonner is ${T}!`
 
 
 
