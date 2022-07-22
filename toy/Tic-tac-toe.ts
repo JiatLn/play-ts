@@ -34,27 +34,27 @@ type SetChess<B extends
     Row<Grid<Chess>, Grid<Chess>, Grid<Chess>>,
     Row<Grid<Chess>, Grid<Chess>, Grid<Chess>>
   >,
-  RN extends RowIdx,
-  CN extends ColIdx,
+  X extends RowIdx,
+  Y extends ColIdx,
   C extends Chess,
   Result extends any[] = [],
   CurrRow extends any[] = []>
-  = B[RN][CN]['hasChess'] extends true
+  = B[X][Y]['hasChess'] extends true
   ? never
   : CurrRow['length'] extends 3 ? Result
   : (
-    RN extends CurrRow['length']
-    ? SetChess<B, RN, CN, C,
+    X extends CurrRow['length']
+    ? SetChess<B, X, Y, C,
       [...Result,
-        B[RN] extends [infer One, infer Two, infer Three]
-        ? CN extends 0
+        B[X] extends [infer One, infer Two, infer Three]
+        ? Y extends 0
         ? [Grid<C>, Two, Three]
-        : CN extends 1
+        : Y extends 1
         ? [One, Grid<C>, Three]
         : [One, Two, Grid<C>]
         : never
       ], [...CurrRow, any]>
-    : SetChess<B, RN, CN, C, [...Result, B[CurrRow['length']]], [...CurrRow, any]>)
+    : SetChess<B, X, Y, C, [...Result, B[CurrRow['length']]], [...CurrRow, any]>)
 
 
 type CheckGameStatus<B extends
